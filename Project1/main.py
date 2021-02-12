@@ -7,16 +7,21 @@ def main():
     Lines = f.readlines()
     f.close()
     vlist, source, dest = readFile(Lines)
+    print("Path from ", source, " to ", dest)
+    # uninformed search: dijkstra
     start = timer()
     path_d = dijkstra(vlist, source, dest)
     end = timer()
     d_time = end - start
-    print(path_d, " ", d_time)
+    print("\nDijkstra Algorithm")
+    print("Path Distance: ", path_d, "\nTime Taken: ", d_time)
+    # informed search: a* heuristic search
     start = timer()
     path_h = a_heuristic(vlist, source, dest)
     end = timer()
     a_time = end - start
-    print(path_h, " ", a_time)
+    print("\nA* Heuristic Search Algorithm")
+    print("Path Distance: ", path_h, "\nTime Taken: ", a_time)
     
 def readFile(Lines):
     vlist = {}
@@ -26,7 +31,6 @@ def readFile(Lines):
         if line.startswith("#"):
             continue
         else:
-            #x = list(map(int, line.split(",")))
             x = line.strip("\n").split(",")
             if len(x) == 2:
                 if x[0] == "S":

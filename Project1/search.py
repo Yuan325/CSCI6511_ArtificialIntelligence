@@ -11,9 +11,7 @@ def helperFindMin(dist, visited):
 
 def dijkstra(vlist, source, dest):
     dist = [math.inf] * len(vlist)
-    path = [""] * len(vlist)
     dist[source] = 0
-    path[source] += str(0) + " "
     visited = [False] * len(vlist)
 
     while False in visited:
@@ -24,18 +22,18 @@ def dijkstra(vlist, source, dest):
             target_i = edge.v2 if edge.v1 == cur_i else edge.v1
             if visited[target_i] == False and dist[target_i] > dist[cur_i] + edge.distance:
                 dist[target_i] = dist[cur_i] + edge.distance
-                path[target_i] = path[cur_i] + " " + str(target_i) + " "
     return dist[dest] if dist[dest] != math.inf else None
 
+# calculate heuristic value for all nodes
 def heuristic(vlist, dest):
     heur = [0] * len(vlist)
     dest_square = vlist.get(dest).square
     for k, v in vlist.items(): 
-        val = square_dist(v.square, dest_square)
+        val = eucli_dist(v.square, dest_square)
         heur[k] = val
     return heur
 
-def square_dist(s1, s2):
+def eucli_dist(s1, s2):
     s1x = (s1 % 10) * 100
     s2x = (s2 % 10) * 100
     s1y = int(s1 / 10) * 100
@@ -58,21 +56,21 @@ def a_heuristic(vlist, source, dest):
         return 0
     closed = [False] * len(vlist)
     fringe = []
-    cost = 0 # if cost == 0, if meant that no destination is found yet.
+    cost = 0 # if cost == 0, it means that no destination is found yet.
     heur = heuristic(vlist, dest)
     fringe.append((heur[source], source, cost ))
-
+    # fringe input: f(n), vertex id, g(n)
     while len(fringe) > 0:
         elem = fringe.pop(0)
         fn, cur_i, gn = elem
-        if cost != 0 and fn >= cost:
+        if cost != 0 and fn >= cost: # end the loop
             break;
         cur = vlist.get(cur_i)
 
         for edge in cur.edges:
             target_i = edge.v2 if edge.v1 == cur_i else edge.v1
             if target_i == dest:
-                if cost==0 or gn+edge.distance < cost: # if we found a destination, compare the distance
+                if cost==0 or gn+edge.distance < cost: # if found a destination, compare the distance
                     cost = gn + edge.distance 
             elif closed[target_i] == False:
                 gn_t = gn + edge.distance
