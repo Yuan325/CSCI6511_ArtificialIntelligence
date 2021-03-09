@@ -1,14 +1,13 @@
-import graph as g
-from search import backtrack
+from search import solve_csp 
 
 def main():
-    f = open("input/input95line.txt", "r")
+    f = open("input/input44line.txt", "r")
     Lines = f.readlines()
     f.close()
     print("Reading files")
-    color, vlist = readFile(Lines)
+    adjs, doms, arcs, color = readFile(Lines)
     print("Done reading. Starting csp graph coloring.")
-    res = backtrack(vlist, color)
+    res = solve_csp(adjs, doms, arcs, color)
     print("Result of CSP Graph Coloring: ")
     if res == None:
         print("No solution was found.")
@@ -16,7 +15,9 @@ def main():
         print(res)
     
 def readFile(Lines):
-    vlist = {}
+    adjs = {}
+    doms = {}
+    arcs = []
     color = -1
     for line in Lines:
         if line.startswith("#"):
@@ -25,16 +26,24 @@ def readFile(Lines):
             color = int(line.partition("=")[2])
         else:
             x = line.strip("\n").split(",")
-            x[0] = int(x[0])
-            x[1] = int(x[1])
-            v1 = g.Vertices(x[0], color) if x[0] not in vlist else vlist.get(x[0])
-            v2 = g.Vertices(x[1], color) if x[1] not in vlist else vlist.get(x[1])
-            vlist[x[0]] = v1
-            vlist[x[1]] = v2
-            if v2 not in v1.adjs:
-                v1.add_adj(v2)
-                v2.add_adj(v1)
-    return color, vlist
+            v1 = int(x[0])
+            v2 = int(x[1])
+            if v1 not in adjs:
+                adjs[v1] = []
+                doms[v1] = []
+                for i in range(color):
+                    doms.get(v1).append(i)
+            if v2 not in adjs:
+                adjs[v2] = []
+                doms[v2] = []
+                for i in range(color):
+                    doms.get(v2).append(i)
+            if v2 not in adjs.get(v1):
+                adjs.get(v1).append(v2)
+                adjs.get(v2).append(v1)
+                arcs.append((v1, v2))
+                arcs.append((v2, v1))
+    return adjs, doms, arcs, color
 
 if __name__ == "__main__":
     main()
