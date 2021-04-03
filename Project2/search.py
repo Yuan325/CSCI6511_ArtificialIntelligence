@@ -10,8 +10,8 @@ def solve_csp(adjs, doms, arcs, color):
 def backtracking(csp_list, adjs, doms, arcs, color):
     if -1 not in csp_list.values():
         return csp_list
-    cur = mrv(csp_list,adjs, doms, color)
     ac3(copy.deepcopy(arcs), adjs, doms)
+    cur = mrv(csp_list,adjs, doms, color)
     val = lcv(cur, csp_list, adjs, doms, color) 
     while val != -1: # while there are available values to pick from
         csp_list[cur] = val
@@ -78,7 +78,6 @@ def lcv(cur, csp_list, adjs, doms, color):
     return value
 
 # constraint propagation - filtering / forward checking
-# check for arc consistency with adjacent vertex
 # remove assigned value from adjacent vertex's domains
 # if there's only 1 available value after removal, assign that value to the vertex
 def filtering(cur, csp_list, adjs, doms, val):
