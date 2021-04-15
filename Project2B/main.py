@@ -9,9 +9,8 @@ def main():
     landscape, tiles, targets = readFile(Lines)
     n = int(len(landscape)*len(landscape)/16)
     doms = getDoms(n)
-    arcs = getArcs(n)
     print("Done reading. Starting csp for tile placement.")
-    res = solve_csp(n, doms, arcs, landscape, tiles, targets)
+    res = solve_csp(n, doms, landscape, tiles, targets)
     print("Result of CSP Tile Placement: ")
     if res == None:
         print("No solution was found.")
@@ -62,14 +61,6 @@ def getDoms(n):
     for i in range(n):
         doms[i] = ["FULL_BLOCK", "OUTER_BOUNDARY", "EL_SHAPE"]
     return doms
-
-def getArcs(n):
-    arcs = []
-    for i in range(n):
-        for j in range(n):
-            if i != j:
-                arcs.append((i,j))
-    return arcs
 
 if __name__ == "__main__":
     main()

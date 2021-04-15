@@ -2,13 +2,13 @@ import math
 import copy
 
 
-def solve_csp(n, doms, arcs, landscape, tiles, targets):
+def solve_csp(n, doms, landscape, tiles, targets):
     csp_list={}
     for i in range(n):
         csp_list[i] = ""
-    return backtracking(csp_list, doms, arcs, landscape, tiles, targets)
+    return backtracking(csp_list, doms, landscape, tiles, targets)
 
-def backtracking(csp_list, doms, arcs, landscape, tiles, targets):
+def backtracking(csp_list, doms, landscape, tiles, targets):
     if "" not in csp_list.values() and targets.get(1) == 0 and targets.get(2) == 0 and targets.get(3) == 0 and targets.get(4) == 0:
         return csp_list
     #ac3()
@@ -33,7 +33,7 @@ def backtracking(csp_list, doms, arcs, landscape, tiles, targets):
         if tiles[val] == 0:
             doms = removeDomain(cur, doms, val)
 
-        res = backtracking(copy.deepcopy(csp_list), copy.deepcopy(doms), arcs, landscape, copy.deepcopy(tiles), t_targets) 
+        res = backtracking(copy.deepcopy(csp_list), copy.deepcopy(doms), landscape, copy.deepcopy(tiles), t_targets) 
         if res != None:
             return res
 
@@ -46,24 +46,6 @@ def backtracking(csp_list, doms, arcs, landscape, tiles, targets):
         
         val = lcv(tiles, doms.get(cur))
     return None
-
-
-def ac3(n, arcs, doms):
-    while len(arcs) != 0:
-        xi, xj = arcs.pop(0)
-        if remove_inconsistent_values(xi, xj, doms):
-            for adj in range(n):
-                if adj != xi:
-                    arcs.append((adj, xi))
-    return
-
-def remove_inconsistent_values(xi, xj, doms):
-    removed = False
-    for dom in doms.get(xi):
-        if dom in doms.get(xj) and len(doms.get(xj)) == 1:
-            doms.get(xi).remove(dom)
-            removed = True
-    return removed
 
 # could be improved
 def mrv(csp_list, doms):
@@ -112,7 +94,8 @@ def returnDomain(cur, doms, val):
             doms.get(k).append(val)
     return doms
 
-# if return none, means this is the wrong path
+# recalculate target by deducting visible colors
+# if visible colors is less than target, return None (means going on a wrong path)
 def deductTargets(landscape, targets, cur, val):
     per_row = len(landscape)/4
     row = int(cur/per_row)
